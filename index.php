@@ -1,4 +1,32 @@
-<?php require_once 'functions.php' ?>
+<?php //MILESTONE 3 - SESSION, HEADER
+    session_start();
+    require_once 'functions.php'; //carico gli strumenti 
+    //logica di controllo: decido cosa fare
+    $final_password = "";
+    $error_message = "";
+
+    // <!-- recupero dato, prendo la lunghezza richiesta usando $_GET e controllo che il dato esista, trasformo il valore ricevuto in numero intero -->
+    if(isset($_GET["pass_length"])){
+    $length = (int) $_GET["pass_length"] ; 
+
+    //eseguo la funzione 
+    //controllo se l'utente ha interagito, all'inizio pagina pulita, se inserisco un numero genero password altrimenti se premo invio senza numero ottengo messaggio di errore. 
+    // Questo basta a capire se c'è un numero valido
+    if ($length > 0) {
+        $final_password = generatePassword($length, $all_characters);
+
+        $_SESSION['password_generata'] = $final_password;
+        header('Location: result.php'  );
+        exit;
+
+        } else if (isset($_GET["pass_length"])) {
+            // Se è entrato qui, significa che il parametro esiste ma non è > 0
+            $error_message = "Nessun parametro valido inserito.";
+        }
+
+    }
+?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +37,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="bg-light">
 
     <div class = "container mt-5 text-center">
 
@@ -19,12 +47,15 @@
         <div class = "mt-5">
             <form action="index.php" method="GET" >
             
-                <label for="pass_length">Lunghezza password:</label>
+                <label for="pass_length" class = "lead">Lunghezza password:</label>
                 <input type="text" name="pass_length">
-                <button type="submit">Invia</button>
+                <button type="submit" class="btn btn-primary">Invia</button>
 
              </form>
         </div>
+
+
+
 
 <!-- stampo in pagina password finale -->
        <?php if ($final_password!== "" ) : ?>
