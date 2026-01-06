@@ -27,12 +27,22 @@ function generatePassword ($length, $all_characters){
 
 //eseguo la funzione 
 $final_password = "";
+$error_message = "";
 
-if ($length > 0) {
+//controllo se l'utente ha interagito, all'inizio pagina pulita, se inserisco un numero genero password altrimenti se premo invio senza numero ottengo messaggio di errore. 
+
+// Questo basta a capire se c'è un numero valido
+    if ($length > 0) {
     $final_password = generatePassword($length, $all_characters);
-} 
+    } else if (isset($_GET["pass_length"])) {
+        // Se è entrato qui, significa che il parametro esiste ma non è > 0
+        $error_message = "Nessun parametro valido inserito.";
+    }
 
- ?>
+
+
+
+?>
 
 
 <!DOCTYPE html>
@@ -61,13 +71,20 @@ if ($length > 0) {
              </form>
         </div>
 
-
+<!-- stampo in pagina password finale -->
        <?php if ($final_password!== "" ) : ?>
         
         <div class = "alert alert-info mt-5">
-            La tua password è: <?php echo $final_password ?>
+            La tua password è: <strong> <?php echo $final_password ?> </strong>
         </div>
 
+        <?php endif; ?>
+
+<!-- stampo in pagina messaggio di errore -->
+        <?php if ($error_message !== "") : ?>
+            <div class="alert alert-warning mt-5">
+                <?php echo $error_message ?>
+            </div>
         <?php endif; ?>
         
 
