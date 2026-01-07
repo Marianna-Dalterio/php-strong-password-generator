@@ -9,11 +9,15 @@
     if(isset($_GET["pass_length"])){
     $length = (int) $_GET["pass_length"] ; 
 
+    //recupero anche la scelta sulle ripetizioni
+    //uso il casting (bool) così avrò true per "1" e false per "0"
+    $allow_repeats = $_GET ["allow_repetitions"];
+
     //eseguo la funzione 
     //controllo se l'utente ha interagito, all'inizio pagina pulita, se inserisco un numero genero password altrimenti se premo invio senza numero ottengo messaggio di errore. 
     // Questo basta a capire se c'è un numero valido
     if ($length > 0) {
-        $final_password = generatePassword($length, $all_characters);
+        $final_password = generatePassword($length, $all_characters, $allow_repeats);
 
         $_SESSION['password_generata'] = $final_password;
         header('Location: result.php'  );
@@ -44,12 +48,31 @@
         <h1 class = "text-body-secondary">Strong Password Generator</h1>
         <h3>Genera una password sicura</h3>
 
-        <div class = "mt-5">
+        <div class = "mt-5 ">
             <form action="index.php" method="GET" >
             
+            <div>
                 <label for="pass_length" class = "lead">Lunghezza password:</label>
                 <input type="text" name="pass_length">
-                <button type="submit" class="btn btn-primary">Invia</button>
+            </div>
+               
+                <label class = "lead">Consenti ripetizioni di uno o più caratteri:</label>
+
+                <div class = "form-check">
+                    
+                    <input type="radio" class="form-check-input" name="allow_repetitions" id="rep_yes" value = "1" checked >
+                    <label for="rep_yes" class="form-check-label"> Sì </label>
+                </div>
+
+                 <div class = "form-check">
+                    <input type="radio" class="form-check-input" name="allow_repetitions" id="rep_no" value = "0" >
+                    <label for="rep_no" class="form-check-label"> No </label>
+                </div>
+                
+                <div>
+                  <button type="submit" class="btn btn-primary">Invia</button>  
+                </div>
+                
 
              </form>
         </div>
@@ -57,14 +80,14 @@
 
 
 
-<!-- stampo in pagina password finale -->
-       <?php if ($final_password!== "" ) : ?>
+<!-- stampo in pagina password finale; questo passaggio diventa superfluo dopo aver creato il file result.php perchè è lì che la password viene generata -->
+       <!-- <?php if ($final_password!== "" ) : ?>
         
         <div class = "alert alert-info mt-5">
             La tua password è: <strong> <?php echo $final_password ?> </strong>
         </div>
 
-        <?php endif; ?>
+        <?php endif; ?> -->
 
 <!-- stampo in pagina messaggio di errore -->
         <?php if ($error_message !== "") : ?>
