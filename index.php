@@ -13,11 +13,24 @@
     //uso il casting (bool) così avrò true per "1" e false per "0"
     $allow_repeats = $_GET ["allow_repetitions"];
 
+    //recupero scelte su caratteri 
+    $wants_letters = isset($_GET["wants_letters"]);
+    $wants_numbers = isset($_GET["wants_numbers"]);
+    $wants_symbols = isset($_GET["wants_symbols"]);
+
+     // Se l'utente non ha spuntato nessuna delle tre opzioni
+    if (!$wants_letters && !$wants_numbers && !$wants_symbols) {
+        $wants_letters = true;
+        $wants_numbers = true;
+        $wants_symbols = true;
+    }
+
+
     //eseguo la funzione 
     //controllo se l'utente ha interagito, all'inizio pagina pulita, se inserisco un numero genero password altrimenti se premo invio senza numero ottengo messaggio di errore. 
     // Questo basta a capire se c'è un numero valido
     if ($length > 0) {
-        $final_password = generatePassword($length, $all_characters, $allow_repeats);
+        $final_password = generatePassword($length, $allow_repeats, $wants_letters, $wants_numbers, $wants_symbols);
 
         $_SESSION['password_generata'] = $final_password;
         header('Location: result.php'  );
@@ -51,36 +64,61 @@
         <div class = "mt-5 ">
             <form action="index.php" method="GET" >
             
-            <div>
-                <label for="pass_length" class = "lead">Lunghezza password:</label>
-                <input type="text" name="pass_length">
-            </div>
-               
-                <label class = "lead">Consenti ripetizioni di uno o più caratteri:</label>
-
-                <div class = "form-check">
-                    
-                    <input type="radio" class="form-check-input" name="allow_repetitions" id="rep_yes" value = "1" checked >
-                    <label for="rep_yes" class="form-check-label"> Sì </label>
-                </div>
-
-                 <div class = "form-check">
-                    <input type="radio" class="form-check-input" name="allow_repetitions" id="rep_no" value = "0" >
-                    <label for="rep_no" class="form-check-label"> No </label>
-                </div>
-                
                 <div>
-                  <button type="submit" class="btn btn-primary">Invia</button>  
+                    <label for="pass_length" class = "lead">Lunghezza password:</label>
+                    <input type="text" name="pass_length">
+                </div>
+                
+                <div class="mt-4 text-start d-inline-block">
+                    <label class = "lead d-block mb-2">Consenti ripetizioni di uno o più caratteri:</label>
+
+                    <div class = "form-check">
+                        
+                        <input type="radio" class="form-check-input" name="allow_repetitions" id="rep_yes" value = "1" checked >
+                        <label for="rep_yes" class="form-check-label"> Sì </label>
+                    </div>
+
+                    <div class = "form-check">
+                        <input type="radio" class="form-check-input" name="allow_repetitions" id="rep_no" value = "0" >
+                        <label for="rep_no" class="form-check-label"> No </label>
+                    </div>
+                    
+
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" name="wants_letters" id="letters" value = "1" checked >
+                        <label for="letters" class="form-check-label">Lettere (A,Z) - (a,z)</label>
+
+                    </div>
+
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" name="wants_numbers" id="numbers" value = "1" checked >
+                        <label for="numbers" class="form-check-label">Numeri</label>
+
+                    </div>
+
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" name="wants_symbols" id="symbols" value = "1" checked >
+                        <label for="symbols" class="form-check-label">Simboli</label>
+
+                    </div>
+
+
                 </div>
                 
 
-             </form>
+
+                    <div>
+                        <button type="submit" class="btn btn-primary">Invia</button>  
+                    </div>
+                
+
+            </form>
         </div>
 
 
 
 
-<!-- stampo in pagina password finale; questo passaggio diventa superfluo dopo aver creato il file result.php perchè è lì che la password viene generata -->
+        <!-- stampo in pagina password finale; questo passaggio diventa superfluo dopo aver creato il file result.php perchè è lì che la password viene generata -->
        <!-- <?php if ($final_password!== "" ) : ?>
         
         <div class = "alert alert-info mt-5">
@@ -89,7 +127,7 @@
 
         <?php endif; ?> -->
 
-<!-- stampo in pagina messaggio di errore -->
+        <!-- stampo in pagina messaggio di errore -->
         <?php if ($error_message !== "") : ?>
             <div class="alert alert-warning mt-5">
                 <?php echo $error_message ?>

@@ -1,19 +1,41 @@
 <?php
 //IN QUESTO FILE SOLO GLI STRUMENTI, IN INDEX.PHP LA LOGICA DI CONTROLLO. 
 
-// <!-- creo un unico "grande calderone" da cui pescare -->
- $lower_case= range('a','z');
- $upper_case= range('A','Z');
- $number=range(0,9);
- $stringa_simboli = "!@#$%^&*()";
-$array_simboli = str_split($stringa_simboli);
- $all_characters = array_merge($lower_case, $upper_case, $number, $array_simboli);
+
 
 //  scrivo la funzione per generare la password
-function generatePassword ($length, $all_characters, $allow_repeats){
+function generatePassword ($length, $allow_repeats, $wants_letters, $wants_numbers, $wants_symbols){
+
+    // <!-- creo un unico "grande calderone" da cui pescare -->
+    $lower_case= range('a','z');
+    $upper_case= range('A','Z');
+    $letters = array_merge($lower_case, $upper_case);
+    $number=range(0,9);
+    $stringa_simboli = "!@#$%^&*()";
+    $array_simboli = str_split($stringa_simboli);
+   
+    //creo il "calderone" vuoto e lo riempio in base alle scelte 
+
+    $pool = [];
+
+    if ($wants_letters){
+        $pool = array_merge($pool, $letters);
+    }
+
+    if ($wants_numbers){
+        $pool= array_merge($pool, $number);
+    }
+
+    if($wants_symbols){
+        $pool= array_merge($pool, $array_simboli);
+
+    }
+
+
+
 
     // SICUREZZA: Se l'utente vuole caratteri univoci ma ne chiede più di quelli disponibili...
-    if(!$allow_repeats && $length > count($all_characters)){
+    if(!$allow_repeats && $length > count($pool)){
         return "Errore: non ci sono abbastanza caratteri unici disponibili! ";
     }
 
@@ -25,8 +47,8 @@ function generatePassword ($length, $all_characters, $allow_repeats){
     while (strlen($password)<$length) {
 
         // 1. Pesco un carattere a caso
-        $random_index = rand(0, count($all_characters)-1);
-        $carattere_pescato = $all_characters[$random_index];
+        $random_index = rand(0, count($pool)-1);
+        $carattere_pescato = $pool[$random_index];
 
         // 2. Controllo: devo vietare i doppioni?
         // Se SI (allow_repeats è false) AND il carattere è già dentro la password...
