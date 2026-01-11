@@ -11,7 +11,7 @@
 
     //recupero anche la scelta sulle ripetizioni
     //uso il casting (bool) così avrò true per "1" e false per "0"
-    $allow_repeats = $_GET ["allow_repetitions"];
+    $allow_repeats = (bool) $_GET ["allow_repetitions"];
 
     //recupero scelte su caratteri 
     $wants_letters = isset($_GET["wants_letters"]);
